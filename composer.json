@@ -1,5 +1,7 @@
 {
     "name": "xeno-php/xeno-php",
+    "version": "0.1.0",
+    "description": "Xenophp is a lightweight PHP framework with a routing system and MVC pattern.",
     "autoload": {
         "psr-4": {
             "App\\": "app/"
