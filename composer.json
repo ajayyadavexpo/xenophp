@@ -1,0 +1,18 @@
+{
+    "name": "xeno-php/xeno-php",
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        },
+        "files":[
+            "app/Helper.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "AjayYadavAi",
+            "email": "ajayyadavexpo@gmail.com"
+        }
+    ],
+    "require": {}
+}
