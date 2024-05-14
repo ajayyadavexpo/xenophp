@@ -7,7 +7,7 @@
             "App\\": "app/"
         },
         "files":[
-            "app/Helper.php"
+            "app/Services/Global/Functions.php"
         ]
     },
     "authors": [
@@ -17,4 +17,5 @@
         }
     ],
     "require": {}
+
 }

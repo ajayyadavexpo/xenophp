@@ -10,7 +10,24 @@ Xenophp provides a flexible and powerful routing system that allows you to defin
 
 ```php
 Route::get('login', 'LoginController', 'index', [Guest::class]);
+
+// dynamic urls
+Route::get('post/{id}','PostController','index');
+Route::get('post/{id}/comment/{comment_id}','PostController','comment');
+
+// PostController.php
+<?php
+namespace App\Controllers;
+class PostController{
+    public function index($id){
+        echo $id;
+    }
+    public function comment($id, $comment_id){
+        echo "Post id : $id and comment Id : $comment_id";
+    }
+}
 ```
+
 In the above example, we define a GET route for the /login URL, which will be handled by the index method of the LoginController class. You can also specify middleware classes, such as Guest::class, to apply before handling the route. This enables you to add authentication, authorization, or other custom logic to your routes easily.
 
 ###  2. MVC Pattern

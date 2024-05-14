@@ -1,9 +1,8 @@
 <?php
-use App\Services\Route;
-use App\Middleware\{
-	Auth,
-	Guest
-};
+use App\Services\Router\RouteService as Route;
+use App\Middleware\Auth;
+use App\Middleware\Guest;
+
 
 Route::get('login','LoginController','index',[Guest::class]);
 Route::get('register','RegisterController','index',[Guest::class]);

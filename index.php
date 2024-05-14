@@ -18,8 +18,8 @@ spl_autoload_register(function($class){
 
 session_start();
 
-use App\Services\Route;
-$route = new Route();
+use App\Services\Router\RouteService;
+$route = new RouteService();
 
 require_once(APP_ROOT.'/routes/route.php');
 
