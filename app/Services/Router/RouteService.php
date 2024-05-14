@@ -80,58 +80,62 @@ class RouteService
 
         // Sort routes with dynamic segments moved to the end
         $routes = self::separateRoutes();
-   
-        foreach ($routes as $route) {
-            if ($route['method'] == $requestMethod) {
-                // Check for exact match
-                if ('/' . $route['uri'] === $requestURI) {
-                    $url_found = true;
-                } else {
-                    // Route has dynamic segments, check if it matches
-                    $url_found = self::handleDynamicRoute($route, $requestURI);
-                }
 
-                if ($url_found) {
-                    self::handleRoute($route);
-                    return;
+        try {
+            foreach ($routes as $route) {
+                if ($route['method'] == $requestMethod) {
+                    // Check for exact match
+                    if ('/' . $route['uri'] === $requestURI) {
+                        $url_found = true;
+                    } else {
+                        // Route has dynamic segments, check if it matches
+                        $url_found = self::handleDynamicRoute($route, $requestURI);
+                    }
+
+                    if ($url_found) {
+                        self::handleRoute($route);
+                        return;
+                    }
                 }
+            }
+
+            throw new \Exception('404 - Page not found');
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+    }
+
+
+    private static function handleRoute($route)
+    {
+        // Handle middleware
+        foreach ($route['middleware'] as $middleware) {
+            $middlewareClass = new $middleware;
+            $middlewareClass->handle();
+        }
+
+        // Get controller class and action method
+        $controllerClass = self::$controllerNamespace . $route['controller'];
+        $action = $route['action'];
+
+        // Instantiate controller
+        $controller = new $controllerClass();
+
+        // Get method parameters
+        $reflectionMethod = new \ReflectionMethod($controller, $action);
+        $methodParameters = $reflectionMethod->getParameters();
+        $parameters = [];
+
+        foreach ($methodParameters as $parameter) {
+            $paramName = $parameter->getName();
+            if (isset(self::$params[$paramName])) {
+                $parameters[] = self::$params[$paramName];
+            } else {
+                $parameters[] = null;
             }
         }
 
-        echo '404 - Page not found';
+        // Call action method with parameters
+        call_user_func_array([$controller, $action], $parameters);
     }
-
-    private static function handleRoute($route)
-{
-    // Handle middleware
-    foreach ($route['middleware'] as $middleware) {
-        $middlewareClass = new $middleware;
-        $middlewareClass->handle();
-    }
-
-    // Get controller class and action method
-    $controllerClass = self::$controllerNamespace . $route['controller'];
-    $action = $route['action'];
-
-    // Instantiate controller
-    $controller = new $controllerClass();
-
-    // Get method parameters
-    $reflectionMethod = new \ReflectionMethod($controller, $action);
-    $methodParameters = $reflectionMethod->getParameters();
-    $parameters = [];
-
-    foreach ($methodParameters as $parameter) {
-        $paramName = $parameter->getName();
-        if (isset(self::$params[$paramName])) {
-            $parameters[] = self::$params[$paramName];
-        } else {
-            $parameters[] = null;
-        }
-    }
-
-    // Call action method with parameters
-    call_user_func_array([$controller, $action], $parameters);
-}
-
 }
